@@ -15,6 +15,14 @@ public class ItemDraggable : MonoBehaviour
         Vector2 endPos = new Vector3(Mathf.RoundToInt((mousePos.x - container.startingCellPosition.x) / container.cellSize.x), Mathf.Abs(Mathf.RoundToInt((mousePos.y - container.startingCellPosition.y) / container.cellSize.y)));
         prevPos = new Vector3((container.startingCellPosition.x + endPos.x * 0.5f) + ((itemSize.x - 1) * 0.5f) / 2, (container.startingCellPosition.y - endPos.y * 0.5f) + ((itemSize.y - 1) * 0.5f) / 2, -0.1f);
         prevEndPos = endPos;
+        
+        for (int y = (int) prevEndPos.y; y < (int) prevEndPos.y + itemSize.y; y++)
+        {
+            for (int x = (int) prevEndPos.x; x < (int) prevEndPos.x + itemSize.x; x++)
+            {
+                container.cells[(int)container.sizeInCells.x * y + x].isOccupied = false;
+            }
+        }
     }
 
     public void OnMouseDrag()
@@ -41,20 +49,20 @@ public class ItemDraggable : MonoBehaviour
                     if (container.cells[(int)container.sizeInCells.x * y + x].isOccupied)
                     {
                         transform.position = prevPos;
+                        for (int y1 = (int) prevEndPos.y; y < (int) prevEndPos.y + itemSize.y; y++)
+                        {
+                            for (int x1 = (int) prevEndPos.x; x < (int) prevEndPos.x + itemSize.x; x++)
+                            {
+                                container.cells[(int)container.sizeInCells.x * y1 + x1].isOccupied = true;
+                            }
+                        }
                         return;
                     }
                 }
             }
 
             transform.position = new Vector3((container.startingCellPosition.x + endPos.x * 0.5f) + ((itemSize.x - 1) * 0.5f) / 2, (container.startingCellPosition.y - endPos.y * 0.5f) + ((itemSize.y - 1) * 0.5f) / 2, -0.1f);
-            for (int y = (int) prevEndPos.y; y < (int) prevEndPos.y + itemSize.y; y++)
-            {
-                for (int x = (int) prevEndPos.x; x < (int) prevEndPos.x + itemSize.x; x++)
-                {
-                    container.cells[(int)container.sizeInCells.x * y + x].isOccupied = false;
-                }
-            }
-            
+
             for (int y = (int) endPos.y; y < (int) endPos.y + itemSize.y; y++)
             {
                 for (int x = (int) endPos.x; x < (int) endPos.x + itemSize.x; x++)
@@ -66,6 +74,25 @@ public class ItemDraggable : MonoBehaviour
         else
         {
             transform.position = prevPos;
+            for (int y = (int) prevEndPos.y; y < (int) prevEndPos.y + itemSize.y; y++)
+            {
+                for (int x = (int) prevEndPos.x; x < (int) prevEndPos.x + itemSize.x; x++)
+                {
+                    container.cells[(int)container.sizeInCells.x * y + x].isOccupied = true;
+                }
+            }
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R) && isDragging)
+        {
+            float z = itemSize.x;
+            itemSize.x = itemSize.y;
+            itemSize.y = z;
+            
+            transform.Rotate(0, 0, -90);
         }
     }
 }
