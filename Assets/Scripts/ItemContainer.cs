@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemContainer : MonoBehaviour
@@ -7,6 +8,7 @@ public class ItemContainer : MonoBehaviour
     public Transform cellsObject;
     public Vector2 startingCellPosition;
     public GameObject cell;
+    public List<ItemCell> cells;
 
     private void Start()
     {
@@ -17,7 +19,8 @@ public class ItemContainer : MonoBehaviour
     {
         for (int i = 0; i < sizeInCells.x * sizeInCells.y; i++)
         {
-            Instantiate(cell, new Vector3(startingCellPosition.x + cellSize.x * (i % sizeInCells.x), startingCellPosition.y - cellSize.y * (i / (int)sizeInCells.x)), Quaternion.identity);
+            var curCell = Instantiate(cell, new Vector3(startingCellPosition.x + cellSize.x * (i % sizeInCells.x), startingCellPosition.y - cellSize.y * (i / (int)sizeInCells.x)), Quaternion.identity, cellsObject);
+            cells.Add(curCell.GetComponent<ItemCell>());
         }
     }
 }
