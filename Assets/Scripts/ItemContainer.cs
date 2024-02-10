@@ -19,7 +19,7 @@ public class ItemContainer : MonoBehaviour
     {
         for (int i = 0; i < sizeInCells.x * sizeInCells.y; i++)
         {
-            var curCell = Instantiate(cell, new Vector3(startingCellPosition.x + cellSize.x * (i % sizeInCells.x), startingCellPosition.y - cellSize.y * (i / (int)sizeInCells.x)), Quaternion.identity, cellsObject);
+            var curCell = Instantiate(cell, new Vector3(startingCellPosition.x + cellSize.x * (i % sizeInCells.x), startingCellPosition.y - cellSize.y * (i / (int)sizeInCells.x), -0.15f), Quaternion.identity, cellsObject);
             cells.Add(curCell.GetComponent<ItemCell>());
         }
     }
