@@ -16,6 +16,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         GetComponent<Image>().raycastTarget = false;
         prevPosition = transform.position;
+        transform.SetParent(container.transform);
         foreach (var cell in occupiedCells) cell.isOccupied = false;
     }
 
@@ -27,6 +28,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void OnEndDrag(PointerEventData eventData)
     {
         GetComponent<Image>().raycastTarget = true;
+        transform.SetParent(container.itemsObject);
         if (!isSuccesfull)
         {
             transform.position = prevPosition;

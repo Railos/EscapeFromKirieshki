@@ -9,8 +9,8 @@ public class InventoryManager : MonoBehaviour
     public Vector2 sizeInCells;
     public GameObject cell;
     public Transform cellsObject;
-    public Vector2 startingCellPosition;
-    
+    public Transform itemsObject;
+
     private void Awake()
     {
         for (int i = 0; i < sizeInCells.x * sizeInCells.y; i++)
@@ -19,5 +19,6 @@ public class InventoryManager : MonoBehaviour
             curCell.GetComponent<InventorySlot>().index = new Vector2(i % sizeInCells.x, i / (int)sizeInCells.x);
             cells.Add(curCell.GetComponent<InventorySlot>());
         }
+        itemsObject.SetAsLastSibling();
     }
 }
