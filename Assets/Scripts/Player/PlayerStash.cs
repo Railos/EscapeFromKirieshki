@@ -1,11 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerStash : MonoBehaviour
 {
     public GameObject stashObject;
+    public GameObject cam;
     public KeyCode stashKey;
 
     private void Start()
@@ -20,14 +18,18 @@ public class PlayerStash : MonoBehaviour
             if (stashObject.activeSelf)
             {
                 stashObject.SetActive(false);
-                GetComponent<PlayerLook>().enabled = true;
-                GetComponent<PlayerMove>().enabled = true;
+                GetComponent<PlayerController>().enabled = true;
+                cam.GetComponent<HeadBob>().enabled = true;
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
             }
             else
             {
                 stashObject.SetActive(true);
-                GetComponent<PlayerLook>().enabled = false;
-                GetComponent<PlayerMove>().enabled = false;
+                GetComponent<PlayerController>().enabled = false;
+                cam.GetComponent<HeadBob>().enabled = false;
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
             }
         }
     }
