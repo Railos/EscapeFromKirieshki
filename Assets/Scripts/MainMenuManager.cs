@@ -13,6 +13,9 @@ public class MainMenuManager : MonoBehaviour
     private void Start()
     {
         GoBackToMain();
+        
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     public void StartRaid()

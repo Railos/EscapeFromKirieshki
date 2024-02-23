@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class GunRecoil : MonoBehaviour
 {
-    public GameObject camRecoilObj;
     public float snappiness = 6;
     public float returnSpeed = 25;
     
@@ -27,13 +26,12 @@ public class GunRecoil : MonoBehaviour
         Rot = Vector3.Slerp(Rot, currentRotation, snappiness * Time.fixedDeltaTime);
         Pos = Vector3.Slerp(Pos, currentPosition, snappinessPos * Time.fixedDeltaTime);
         transform.localRotation = Quaternion.Euler(Rot);
-        //camRecoilObj.transform.localRotation = Quaternion.Euler(Rot);
         transform.localPosition = Pos;
     }
 
     public void Fire()
     {
-        currentRotation += new Vector3(-RecoilRotation.x, Random.Range(-RecoilRotation.y, RecoilRotation.y), Random.Range(-RecoilRotation.z, RecoilRotation.z));
+        currentRotation += new Vector3(-RecoilRotation.x, Random.Range(0f, RecoilRotation.y), Random.Range(-RecoilRotation.z, RecoilRotation.z));
         currentPosition += new Vector3(RecoilPositionX, 0f, 0f);
     }
 }

@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 public class InventorySlot : MonoBehaviour, IDropHandler
 {
 
+    public InventoryManager container;
     public bool isOccupied;
     public Vector2 index;
     

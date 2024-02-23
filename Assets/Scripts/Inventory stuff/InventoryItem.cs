@@ -16,7 +16,8 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         GetComponent<Image>().raycastTarget = false;
         prevPosition = transform.position;
-        transform.SetParent(container.transform);
+        transform.SetParent(container.transform.parent);
+        transform.SetAsLastSibling();
         foreach (var cell in occupiedCells) cell.isOccupied = false;
     }
 
@@ -39,6 +40,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void DoTheDrop(InventorySlot slot)
     {
+
         if ((slot.index.y + 1) - itemSize.y < 0 || slot.index.x + itemSize.x > container.sizeInCells.x)
         {
             transform.position = prevPosition;
@@ -61,6 +63,12 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         
         foreach (var cell in occupiedCells) cell.isOccupied = false;
         occupiedCells.Clear();
+
+        if (slot.container != this.container)
+        {
+            container = slot.container;
+            transform.SetParent(container.itemsObject);
+        }
         
         for (int y = (int)slot.index.y; y > slot.index.y - itemSize.y; y--)
         {

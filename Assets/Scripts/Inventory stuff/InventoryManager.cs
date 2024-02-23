@@ -18,6 +18,7 @@ public class InventoryManager : MonoBehaviour
             var curCell = Instantiate(cell, cellsObject);
             curCell.GetComponent<InventorySlot>().index = new Vector2(i % sizeInCells.x, i / (int)sizeInCells.x);
             cells.Add(curCell.GetComponent<InventorySlot>());
+            curCell.GetComponent<InventorySlot>().container = this;
         }
         itemsObject.SetAsLastSibling();
     }

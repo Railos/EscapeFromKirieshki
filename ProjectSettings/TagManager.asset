@@ -12,9 +12,9 @@ TagManager:
   - PostProcessing
   - Water
   - UI
-  - Hands
-  - 
-  - 
+  - Player
+  - Bullet
+  - Ground
   - 
   - 
   - 

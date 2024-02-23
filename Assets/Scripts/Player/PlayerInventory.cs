@@ -1,11 +1,25 @@
 using UnityEngine;
 
-public class PlayerStash : MonoBehaviour
+public class PlayerInventory : MonoBehaviour
 {
+    public static PlayerInventory Instance;
+    public bool inStash;
     public GameObject stashObject;
     public GameObject cam;
     public KeyCode stashKey;
 
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(Instance);
+        }
+        else
+        {
+            Instance = this;
+        }    
+    }
+    
     private void Start()
     {
         stashObject.SetActive(false);
@@ -13,10 +27,11 @@ public class PlayerStash : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(stashKey))
+        if (!PauseMenuManager.Instance.isPaused && Input.GetKeyDown(stashKey))
         {
             if (stashObject.activeSelf)
             {
+                inStash = false;
                 stashObject.SetActive(false);
                 GetComponent<PlayerController>().enabled = true;
                 cam.GetComponent<HeadBob>().enabled = true;
@@ -25,6 +40,7 @@ public class PlayerStash : MonoBehaviour
             }
             else
             {
+                inStash = true;
                 stashObject.SetActive(true);
                 GetComponent<PlayerController>().enabled = false;
                 cam.GetComponent<HeadBob>().enabled = false;
