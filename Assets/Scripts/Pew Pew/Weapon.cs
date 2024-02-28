@@ -26,8 +26,8 @@ public class Weapon : MonoBehaviour
     private void Inputing()
     {
         if (!canShoot) return;
-        if (isAutomatic) shootingInput = Input.GetMouseButton(0);
-        else shootingInput = Input.GetMouseButtonDown(0);
+        if (isAutomatic) shootingInput = Player.Instance.controls.Land.ShootWeapon.inProgress;
+        else shootingInput = Player.Instance.controls.Land.ShootWeapon.triggered;
     }
 
     private void ChecksForShooting()

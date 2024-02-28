@@ -1,11 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
     public static Player Instance;
+    public GameObject weaponSwayObj;
 
     [Header("Stamina")]
     public Slider staminaBar;
@@ -16,6 +19,10 @@ public class Player : MonoBehaviour
     public float maxStamina = 5f;
     public float minStaminaForAction = 0.5f;
     public bool isDrainingStamina;
+
+    public Coroutine extractionCoroutine;
+    public Controls controls;
+    
     public float Stamina
     {
         get
@@ -68,5 +75,25 @@ public class Player : MonoBehaviour
 
         staminaBar.maxValue = maxStamina;
         staminaBar.value = maxStamina;
+        controls = new Controls();
+        controls.Enable();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.GetComponent<ExtractionZone>() != null)
+        {
+            extractionCoroutine = StartCoroutine(other.GetComponent<ExtractionZone>().ExitingRaid());
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.GetComponent<ExtractionZone>() != null)
+        {
+            StopCoroutine(extractionCoroutine);
+            other.GetComponent<ExtractionZone>().HideTimer();
+            extractionCoroutine = null;
+        }
     }
 }

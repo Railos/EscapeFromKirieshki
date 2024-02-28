@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
-    [Header("PlayerController")]
+    [Header("PlayerController")] 
+    [HideInInspector] public bool Enabled = true;
     [SerializeField] public Transform Camera;
     [SerializeField, Range(1, 10)] float walkingSpeed = 3.0f;
     [Range(0.1f, 5)] public float CrouchSpeed = 1.0f;
@@ -23,21 +25,19 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float CrouchHeight = 1.0f;
     [SerializeField] float gravity = 20.0f;
     [SerializeField] float timeToRunning = 2.0f;
-    [HideInInspector] public bool canMove = true;
-    [HideInInspector] public bool CanRun = true;
 
     [Space(20)]
     [Header("Input")]
-    [SerializeField] private KeyCode crouchKey = KeyCode.LeftControl;
+    public KeyCode crouchKey = KeyCode.LeftControl;
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
     [SerializeField] private KeyCode runKey = KeyCode.LeftShift;
 
     [HideInInspector] public CharacterController characterController;
     [HideInInspector] public Vector3 moveDirection = Vector3.zero;
-    bool isCrouching = false;
+    [HideInInspector] public bool isCrouching = false;
     float InstallCrouchHeight;
     float rotationX = 0;
-    public bool isRunning = false;
+    [HideInInspector] public bool isRunning = false;
     float InstallFOV;
     Camera cam;
     [HideInInspector] public bool Moving;
@@ -52,8 +52,11 @@ public class PlayerController : MonoBehaviour
     private Player player;
     private bool isDrainingStaminaRunning;
     private float prevSpeedToStandUp;
+    private Controls controls;
+
     void Start()
     {
+        
         player = Player.Instance;
         characterController = GetComponent<CharacterController>();
         cam = GetComponentInChildren<Camera>();
@@ -64,6 +67,8 @@ public class PlayerController : MonoBehaviour
         WalkingValue = walkingSpeed;
         RunningValue = WalkingValue;
         prevSpeedToStandUp = speedToStandUp;
+        Enabled = true;
+        controls = Player.Instance.controls;
     }
 
     void Update()
@@ -78,14 +83,14 @@ public class PlayerController : MonoBehaviour
         
         Vector3 forward = transform.TransformDirection(Vector3.forward);
         Vector3 right = transform.TransformDirection(Vector3.right);
-        
-        vertical = canMove ? (isRunning ? RunningValue : WalkingValue) * Input.GetAxis("Vertical") : 0;
-        horizontal = canMove ? (isRunning ? RunningValue : WalkingValue) * Input.GetAxis("Horizontal") : 0;
+        vertical = Enabled ? (isRunning ? RunningValue : WalkingValue) * Input.GetAxis("Vertical") : 0;
+        horizontal = Enabled ? (isRunning ? RunningValue : WalkingValue) * Input.GetAxis("Horizontal") : 0;
+
 
         float movementDirectionY = moveDirection.y;
         moveDirection = (forward * vertical) + (right * horizontal);
 
-        if (player.Stamina >= player.minStaminaForAction && Input.GetKey(jumpKey) && canMove && characterController.isGrounded)
+        if (player.Stamina >= player.minStaminaForAction && controls.Land.Jump.triggered && Enabled && characterController.isGrounded)
         {
             moveDirection.y = jumpSpeed;
             player.Stamina -= staminaDrainJump;
@@ -105,11 +110,11 @@ public class PlayerController : MonoBehaviour
     {
         RaycastHit CrouchCheck;
         
-        if (Input.GetKeyDown(crouchKey))
+        if (controls.Land.Crouch.triggered)
         {
-            if (player.Stamina >= player.minStaminaForAction ||
+            if (Enabled && (player.Stamina >= player.minStaminaForAction ||
                 (!Physics.Raycast(GetComponentInChildren<Camera>().transform.position,
-                    transform.TransformDirection(Vector3.up), out CrouchCheck, 0.8f, 1) && isCrouching))
+                    transform.TransformDirection(Vector3.up), out CrouchCheck, 0.8f, 1) && isCrouching)))
             {
                 StopCoroutine(nameof(DoCrouch));
                 isCrouching = !isCrouching;
@@ -156,9 +161,9 @@ public class PlayerController : MonoBehaviour
 
     private void Running()
     {
-        if (Input.GetKeyDown(runKey))
+        if (controls.Land.Run.triggered)
         {
-            if ((player.Stamina >= player.minStaminaForAction && !isCrouching && CanRun) ||
+            if ((player.Stamina >= player.minStaminaForAction && !isCrouching && Enabled) ||
                 (isRunning && player.Stamina < player.minStaminaForAction))
             {
                 isRunning = !isRunning;
@@ -173,10 +178,15 @@ public class PlayerController : MonoBehaviour
         while (isRunning)
         {
             RunningValue = Mathf.Lerp(RunningValue, RunningSpeed, timeToRunning * Time.deltaTime);
+            if (controls.Land.Move.ReadValue<Vector2>().y == 0 && controls.Land.Move.ReadValue<Vector2>().x == 0)
+            {
+                isRunning = false;
+            }
             yield return null;
         }
         RunningValue = WalkingValue;
     }
+    
 
     private IEnumerator DrainStaminaRunning()
     {
@@ -197,15 +207,15 @@ public class PlayerController : MonoBehaviour
 
     private void MouseMoving()
     {
-        if (Cursor.lockState == CursorLockMode.Locked && canMove)
+        if (Cursor.lockState == CursorLockMode.Locked && Enabled)
         {
-            Lookvertical = -Input.GetAxis("Mouse Y");
-            Lookhorizontal = Input.GetAxis("Mouse X");
+            Lookvertical = -controls.Land.MouseY.ReadValue<float>();
+            Lookhorizontal = controls.Land.MouseX.ReadValue<float>();
 
-            rotationX += Lookvertical * lookSpeed;
+            rotationX += Lookvertical * lookSpeed / 20f;
             rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
             Camera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
-            transform.rotation *= Quaternion.Euler(0, Lookhorizontal * lookSpeed, 0);
+            transform.rotation *= Quaternion.Euler(0, Lookhorizontal * lookSpeed / 20f, 0);
 
             if (isRunning && Moving) cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, RunningFOV, SpeedToFOV * Time.deltaTime);
             else cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, InstallFOV, SpeedToFOV * Time.deltaTime);

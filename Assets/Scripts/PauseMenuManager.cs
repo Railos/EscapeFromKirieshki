@@ -10,6 +10,7 @@ public class PauseMenuManager : MonoBehaviour
     public static PauseMenuManager Instance;
     public GameObject canvas;
     public GameObject statsCanvas;
+    public GameObject extractionCanvas;
     public KeyCode pauseKey;
     public bool isPaused;
 
@@ -27,7 +28,7 @@ public class PauseMenuManager : MonoBehaviour
 
     private void Update()
     {
-        if (!PlayerInventory.Instance.inStash && Input.GetKeyDown(pauseKey))
+        if (!PlayerInventory.Instance.inStash && Player.Instance.controls.Land.PauseGame.triggered)
         {
             canvas.SetActive(!canvas.activeSelf);
             statsCanvas.SetActive(!statsCanvas.activeSelf);
@@ -36,11 +37,13 @@ public class PauseMenuManager : MonoBehaviour
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
+                extractionCanvas.SetActive(false);
             }
             else
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
+                if (Player.Instance.extractionCoroutine != null) extractionCanvas.SetActive(true);
             }
         }
     }
@@ -54,6 +57,7 @@ public class PauseMenuManager : MonoBehaviour
     {
         statsCanvas.SetActive(true);
         canvas.SetActive(false);
+        if (Player.Instance.extractionCoroutine != null) extractionCanvas.SetActive(true);
         isPaused = false;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

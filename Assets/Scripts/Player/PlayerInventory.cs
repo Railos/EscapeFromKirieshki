@@ -17,7 +17,7 @@ public class PlayerInventory : MonoBehaviour
         else
         {
             Instance = this;
-        }    
+        }
     }
     
     private void Start()
@@ -27,25 +27,23 @@ public class PlayerInventory : MonoBehaviour
 
     private void Update()
     {
-        if (!PauseMenuManager.Instance.isPaused && Input.GetKeyDown(stashKey))
+        if (!PauseMenuManager.Instance.isPaused && Player.Instance.controls.Land.OpenInventory.triggered)
         {
             if (stashObject.activeSelf)
             {
                 inStash = false;
                 stashObject.SetActive(false);
-                GetComponent<PlayerController>().enabled = true;
-                cam.GetComponent<HeadBob>().enabled = true;
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
+                GetComponent<PlayerController>().Enabled = true;
             }
             else
             {
                 inStash = true;
                 stashObject.SetActive(true);
-                GetComponent<PlayerController>().enabled = false;
-                cam.GetComponent<HeadBob>().enabled = false;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
+                GetComponent<PlayerController>().Enabled = false;
             }
         }
     }

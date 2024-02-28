@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    [SerializeField] private InventoryManager container;
+    public InventoryManager container;
     public List<InventorySlot> occupiedCells = new List<InventorySlot>();
     public Vector2 itemSize;
     public bool isSuccesfull = false;
@@ -16,12 +16,12 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     {
         GetComponent<Image>().raycastTarget = false;
         prevPosition = transform.position;
-        transform.SetParent(container.transform.parent);
+        transform.SetParent(container.inventoryCanvas.transform);
         transform.SetAsLastSibling();
         foreach (var cell in occupiedCells) cell.isOccupied = false;
     }
 
-    public void OnDrag(PointerEventData eventData)
+    public virtual void OnDrag(PointerEventData eventData)
     {
         transform.position = new Vector3(Input.mousePosition.x + ((itemSize.x - 1) * 50 / 2), Input.mousePosition.y + ((itemSize.y - 1) * 50 / 2), 0f);
     }
@@ -40,14 +40,20 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void DoTheDrop(InventorySlot slot)
     {
-
+        InventoryManager prevContainer = container;
+        if (slot.container != this.container)
+        {
+            container = slot.container;
+            transform.SetParent(container.itemsObject);
+        }
+        
         if ((slot.index.y + 1) - itemSize.y < 0 || slot.index.x + itemSize.x > container.sizeInCells.x)
         {
             transform.position = prevPosition;
             foreach (var cell in occupiedCells) cell.isOccupied = true;
+            container = prevContainer;
             return;
         }
-        
         for (int y = (int)slot.index.y; y > slot.index.y - itemSize.y; y--)
         {
             for (int x = (int)slot.index.x; x < slot.index.x + itemSize.x; x++)
@@ -56,6 +62,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 {
                     transform.position = prevPosition;
                     foreach (var cell in occupiedCells) cell.isOccupied = true;
+                    container = prevContainer;
                     return;
                 }
             }
@@ -64,12 +71,6 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         foreach (var cell in occupiedCells) cell.isOccupied = false;
         occupiedCells.Clear();
 
-        if (slot.container != this.container)
-        {
-            container = slot.container;
-            transform.SetParent(container.itemsObject);
-        }
-        
         for (int y = (int)slot.index.y; y > slot.index.y - itemSize.y; y--)
         {
             for (int x = (int)slot.index.x; x < slot.index.x + itemSize.x; x++)

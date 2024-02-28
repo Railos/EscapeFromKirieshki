@@ -11,4 +11,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Raid.unity
     guid: cfadba7d37ee49c44ab9335916171842
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 14c146fad9c311d42b6b72ef57f39f72,
+      type: 2}

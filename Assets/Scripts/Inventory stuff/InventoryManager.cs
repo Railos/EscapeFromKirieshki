@@ -10,6 +10,7 @@ public class InventoryManager : MonoBehaviour
     public GameObject cell;
     public Transform cellsObject;
     public Transform itemsObject;
+    public GameObject inventoryCanvas;
 
     private void Awake()
     {

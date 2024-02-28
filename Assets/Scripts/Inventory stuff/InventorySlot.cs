@@ -6,15 +6,14 @@ using UnityEngine.UIElements;
 
 public class InventorySlot : MonoBehaviour, IDropHandler
 {
-
     public InventoryManager container;
     public bool isOccupied;
     public Vector2 index;
     
-    public void OnDrop(PointerEventData eventData)
+    public virtual void OnDrop(PointerEventData eventData)
     {
         InventoryItem inventoryItem = eventData.pointerDrag.GetComponent<InventoryItem>();
-        if (inventoryItem)
+        if (inventoryItem != null)
         {
             inventoryItem.isSuccesfull = true;
             inventoryItem.DoTheDrop(this);
