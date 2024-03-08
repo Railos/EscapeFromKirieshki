@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -22,10 +23,10 @@ public class HandsHolder : MonoBehaviour
     Vector3 StartRot;
     Vector3 FinalPos;
     Vector3 FinalRot;
-    CharacterController player;
-    private void Awake()
+    Rigidbody player;
+    private void Start()
     {
-        player = GetComponentInParent<CharacterController>();
+        player = Player.Instance.gameObject.GetComponent<Rigidbody>();
         if (player.transform.GetComponent<PlayerController>() != null) ToggleSpeed = player.transform.GetComponent<PlayerController>().CrouchSpeed;
         else ToggleSpeed = 0.1f;
         AmountValue = Amount;
@@ -40,7 +41,7 @@ public class HandsHolder : MonoBehaviour
         if (!Enabled) return;
         float speed = new Vector3(player.velocity.x, 0, player.velocity.z).magnitude;
         Reset();
-        if (speed > ToggleSpeed && player.isGrounded)
+        if (speed > ToggleSpeed && Player.Instance.GetComponent<PlayerController>().isGrounded)
         {
             FinalPos += HeadBobMotion();
             FinalRot += new Vector3(-HeadBobMotion().z, 0, HeadBobMotion().x) * RotationMultipler * 10;

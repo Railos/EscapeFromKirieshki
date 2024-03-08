@@ -116,6 +116,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Prone"",
+                    ""type"": ""Button"",
+                    ""id"": ""2f3e5db6-3602-48a2-b30f-edbb9386ce7a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -272,6 +281,17 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""ADS"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d945cab5-ded9-4b17-9884-330268be49aa"",
+                    ""path"": ""<Keyboard>/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Desktop"",
+                    ""action"": ""Prone"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -296,6 +316,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Land_Jump = m_Land.FindAction("Jump", throwIfNotFound: true);
         m_Land_ShootWeapon = m_Land.FindAction("Shoot Weapon", throwIfNotFound: true);
         m_Land_ADS = m_Land.FindAction("ADS", throwIfNotFound: true);
+        m_Land_Prone = m_Land.FindAction("Prone", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -367,6 +388,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Land_Jump;
     private readonly InputAction m_Land_ShootWeapon;
     private readonly InputAction m_Land_ADS;
+    private readonly InputAction m_Land_Prone;
     public struct LandActions
     {
         private @Controls m_Wrapper;
@@ -381,6 +403,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Land_Jump;
         public InputAction @ShootWeapon => m_Wrapper.m_Land_ShootWeapon;
         public InputAction @ADS => m_Wrapper.m_Land_ADS;
+        public InputAction @Prone => m_Wrapper.m_Land_Prone;
         public InputActionMap Get() { return m_Wrapper.m_Land; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -420,6 +443,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @ADS.started += instance.OnADS;
             @ADS.performed += instance.OnADS;
             @ADS.canceled += instance.OnADS;
+            @Prone.started += instance.OnProne;
+            @Prone.performed += instance.OnProne;
+            @Prone.canceled += instance.OnProne;
         }
 
         private void UnregisterCallbacks(ILandActions instance)
@@ -454,6 +480,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @ADS.started -= instance.OnADS;
             @ADS.performed -= instance.OnADS;
             @ADS.canceled -= instance.OnADS;
+            @Prone.started -= instance.OnProne;
+            @Prone.performed -= instance.OnProne;
+            @Prone.canceled -= instance.OnProne;
         }
 
         public void RemoveCallbacks(ILandActions instance)
@@ -492,5 +521,6 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnShootWeapon(InputAction.CallbackContext context);
         void OnADS(InputAction.CallbackContext context);
+        void OnProne(InputAction.CallbackContext context);
     }
 }

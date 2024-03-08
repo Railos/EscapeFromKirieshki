@@ -20,10 +20,10 @@ public class HeadBob : MonoBehaviour
     Vector3 StartPos;
     Vector3 StartRot;
     Vector3 FinalRot;
-    CharacterController player;
-    private void Awake()
+    Rigidbody player;
+    private void Start()
     {
-        player = GetComponentInParent<CharacterController>();
+        player = Player.Instance.GetComponent<Rigidbody>();
         StartPos = transform.localPosition;
         StartRot = transform.localRotation.eulerAngles;
     }
@@ -40,7 +40,7 @@ public class HeadBob : MonoBehaviour
     {
         float speed = new Vector3(player.velocity.x, 0, player.velocity.z).magnitude;
         if (speed < ToggleSpeed) return;
-        if (!player.isGrounded) return;
+        if (!Player.Instance.GetComponent<PlayerController>().isGrounded) return;
         PlayMotion(HeadBobMotion());
     }
 

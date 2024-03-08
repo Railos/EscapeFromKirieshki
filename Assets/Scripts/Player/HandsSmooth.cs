@@ -5,7 +5,7 @@ using UnityEngine;
 public class HandsSmooth : MonoBehaviour
 {
     [Header("HandsSmooth")]
-    [SerializeField] CharacterController controller;
+    [HideInInspector] Rigidbody controller;
     [SerializeField, Range(1, 10)] float smooth = 4f;
     [SerializeField, Range(0.001f, 1)] float amount = 0.03f;
     [SerializeField, Range(0.001f, 1)] float maxAmount = 0.04f;
@@ -27,8 +27,8 @@ public class HandsSmooth : MonoBehaviour
 
     private void Start()
     {
-        controller = GetComponentInParent<CharacterController>();
         player = Player.Instance.GetComponent<PlayerController>();
+        controller = player.GetComponent<Rigidbody>();
         InstallPosition = transform.localPosition;
         InstallRotation = transform.localRotation;
     }

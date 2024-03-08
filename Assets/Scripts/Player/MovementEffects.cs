@@ -7,7 +7,7 @@ namespace EvolveGames
     public class MovementEffects : MonoBehaviour
     {
         [Header("MOVEMENT FX")]
-        [SerializeField] PlayerController Player;
+        [SerializeField] PlayerController player;
         [SerializeField, Range(0.05f, 2)] float RotationAmount = 0.2f;
         [SerializeField, Range(1f, 20)] float RotationSmooth = 6f;
         [Header("Movement")]
@@ -18,15 +18,15 @@ namespace EvolveGames
         Vector3 MovementVector;
         private void Start()
         {
-            Player = GetComponentInParent<PlayerController>();
+            player = Player.Instance.GetComponent<PlayerController>();
             InstallRotation = transform.localRotation;
         }
 
         private void Update()
         {
-            float movementX = (Player.vertical * RotationAmount);
-            float movementZ = (-Player.horizontal * RotationAmount);
-            MovementVector = new Vector3(CanMovementFX ? movementX + Player.characterController.velocity.y * MovementAmount : movementX, 0, movementZ);
+            float movementX = (player.vertical * RotationAmount);
+            float movementZ = (-player.horizontal * RotationAmount);
+            MovementVector = new Vector3(CanMovementFX ? movementX + player.characterController.velocity.y * MovementAmount : movementX, 0, movementZ);
             transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(MovementVector + InstallRotation.eulerAngles), Time.deltaTime * RotationSmooth);
         }
     }
