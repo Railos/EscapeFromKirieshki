@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float timeToRunning = 2.0f;
     private float InstallGoingProneTime;
     [SerializeField] private float goingProneTime;
+    [SerializeField] private float layingDownTime;
 
     [HideInInspector] public Rigidbody characterController;
     [HideInInspector] public CapsuleCollider collider;
@@ -103,8 +104,6 @@ public class PlayerController : MonoBehaviour
 
         Moving = horizontal < 0 || vertical < 0 || horizontal > 0 || vertical > 0 ? true : false;
 
-        characterController.velocity = new Vector3(moveDirection.x, characterController.velocity.y, moveDirection.z);
-        
         Crouching();
 
         if (controls.Land.Prone.triggered && Enabled && isGrounded && Player.Instance.Stamina >= staminaDrainCrouch)
@@ -117,14 +116,17 @@ public class PlayerController : MonoBehaviour
                 lookXUpLimit = 20f;
                 lookSpeed = 0.5f;
                 isCrouching = false;
-                playerHead.localRotation = Quaternion.Euler(-90, 0, 0);
-                Player.Instance.Stamina -= staminaDrainCrouch;
-
                 if (isRunning)
                 {
-                    goingProneTime *= 1.75f;
+                    Enabled = false;
+                    goingProneTime *= 2f;
                     isRunning = false;
+                    characterController.velocity = new Vector3(moveDirection.x / 2f, 2f, moveDirection.z / 2f);
+                    layingDownTime = 6f;
+                    Invoke(nameof(AbleToProne), goingProneTime);
                 }
+                playerHead.localRotation = Quaternion.Euler(-90, 0, 0);
+                Player.Instance.Stamina -= staminaDrainCrouch;
             }
             else
             {
@@ -134,7 +136,6 @@ public class PlayerController : MonoBehaviour
                     lookXDownLimit = 80f;
                     playerHead.localRotation = Quaternion.Euler(0, 0, 0);
                     Player.Instance.Stamina -= staminaDrainCrouch;
-                    lookSpeed = 0.25f;
                     goingProneTime = InstallGoingProneTime;
                     AbleToProne();
                 }
@@ -144,34 +145,42 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(nameof(GoProne));
         }
     }
+    
+    private void FixedUpdate()
+    {
+        if (Enabled)
+            characterController.velocity = new Vector3(moveDirection.x, characterController.velocity.y, moveDirection.z);
+    }
 
     private IEnumerator GoProne()
     {
         while (isProne)
         {
-            transform.rotation = Quaternion.Euler(Mathf.Lerp(transform.eulerAngles.x, 90, goingProneTime * Time.deltaTime), transform.eulerAngles.y, transform.eulerAngles.z);
+            transform.rotation = Quaternion.Euler(Mathf.Lerp(transform.eulerAngles.x, 90, layingDownTime * Time.deltaTime), transform.eulerAngles.y, transform.eulerAngles.z);
             yield return null;
         }
 
         while (!isProne)
         {
-            transform.rotation = Quaternion.Euler(Mathf.Lerp(transform.eulerAngles.x, 0, goingProneTime / 2f * Time.deltaTime), transform.eulerAngles.y, transform.eulerAngles.z);
+            transform.rotation = Quaternion.Euler(Mathf.Lerp(transform.eulerAngles.x, 0, layingDownTime / 2f * Time.deltaTime), transform.eulerAngles.y, transform.eulerAngles.z);
             yield return null;
         }
     }
 
     private void AbleToProne()
     {
+        Enabled = true;
         lookSpeed = InstallLookSpeed;
+        layingDownTime = 3f;
     }
 
     private void Crouching()
     {
         RaycastHit CrouchCheck;
         
-        if (controls.Land.Crouch.triggered)
+        if (controls.Land.Crouch.triggered && isGrounded)
         {
-            if (Enabled && player.Stamina >= player.minStaminaForAction && (!Physics.Raycast(transform.position, Vector3.up, 1.2f) || isProne))
+            if (Enabled && player.Stamina >= player.minStaminaForAction && !Physics.Raycast(transform.position, Vector3.up, CrouchHeight / 2f))
             {
                 StopCoroutine(nameof(DoCrouch));
                 isCrouching = !isCrouching;
@@ -179,12 +188,20 @@ public class PlayerController : MonoBehaviour
                 {
                     player.Stamina -= staminaDrainCrouch;
                     speedToStandUp = prevSpeedToStandUp;
+                    if (isRunning)
+                    {
+                        Enabled = false;
+                        Invoke(nameof(AbleToProne), 0.2f);
+                    }
                     isRunning = false;
                     if (isProne)
                     {
                         isProne = false;
                         playerHead.localRotation = Quaternion.Euler(0, 0, 0);
-                        AbleToProne();
+                        Enabled = false;
+                        Invoke(nameof(AbleToProne), goingProneTime / 2f);
+                        lookXUpLimit = 80f;
+                        lookXDownLimit = 80f;
                     }
                 }
                 else
@@ -224,7 +241,7 @@ public class PlayerController : MonoBehaviour
 
     private void Running()
     {
-        if (controls.Land.Run.triggered)
+        if (controls.Land.Run.triggered && !isProne)
         {
             if ((player.Stamina >= player.minStaminaForAction && !isCrouching && Enabled) ||
                 (isRunning && player.Stamina < player.minStaminaForAction))
