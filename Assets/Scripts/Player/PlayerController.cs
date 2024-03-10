@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     public float speedToStandUp;
     [SerializeField, Range(2, 20)] float RunningSpeed = 4.0f;
     [SerializeField, Range(0, 20)] float jumpSpeed = 6.0f;
+    [SerializeField] private float timeBeforeJump;
+    private bool canJump = true;
     public float staminaDrainJump;
     [SerializeField, Range(0.5f, 10)] float lookSpeed = 2.0f;
     [SerializeField, Range(10, 120)] float lookXDownLimit = 80.0f;
@@ -36,7 +38,6 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public Vector3 moveDirection = Vector3.zero;
     [HideInInspector] public bool isCrouching = false;
     float InstallCrouchHeight;
-    float rotationX = 0;
     [HideInInspector] public bool isRunning = false;
     float InstallFOV;
     public Camera cam;
@@ -87,6 +88,9 @@ public class PlayerController : MonoBehaviour
     {
         Running();
 
+        RaycastHit groundHit;
+        isGrounded = Physics.SphereCast(transform.position, 0.5f, Vector3.down, out groundHit, 0.8f);
+        
         Vector3 forward = playerHead.TransformDirection(Vector3.forward);
         Vector3 right = playerHead.TransformDirection(Vector3.right);
         vertical = Enabled ? (isProne ? proneSpeed : (isRunning ? RunningValue : WalkingValue)) * Input.GetAxis("Vertical") : 0;
@@ -94,19 +98,21 @@ public class PlayerController : MonoBehaviour
 
         moveDirection = (forward * vertical) + (right * horizontal);
 
-        if (player.Stamina >= player.minStaminaForAction && controls.Land.Jump.triggered && Enabled && isGrounded && !isProne)
+        if (canJump && player.Stamina >= player.minStaminaForAction && controls.Land.Jump.triggered && Enabled && isGrounded && !isProne)
         {
+            canJump = false;
             characterController.AddForce(Vector3.up * jumpSpeed, ForceMode.Impulse);
             player.Stamina -= staminaDrainJump;
             if (isCrouching) Player.Instance.Stamina -= staminaDrainCrouch;
             isCrouching = false;
+            Invoke(nameof(WaitForJump), timeBeforeJump);
         }
 
         Moving = horizontal < 0 || vertical < 0 || horizontal > 0 || vertical > 0 ? true : false;
 
         Crouching();
 
-        if (controls.Land.Prone.triggered && Enabled && isGrounded && Player.Instance.Stamina >= staminaDrainCrouch)
+        if (controls.Land.Prone.triggered && Enabled && isGrounded && Player.Instance.Stamina >= staminaDrainCrouch && (Player.Instance.Stamina > Player.Instance.minStaminaForAction || isProne))
         {
             StopCoroutine(nameof(GoProne));
             isProne = !isProne;
@@ -144,6 +150,11 @@ public class PlayerController : MonoBehaviour
             }
             StartCoroutine(nameof(GoProne));
         }
+    }
+
+    private void WaitForJump()
+    {
+        canJump = true;
     }
     
     private void FixedUpdate()
@@ -304,15 +315,5 @@ public class PlayerController : MonoBehaviour
             if (isRunning && Moving) cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, RunningFOV, SpeedToFOV * Time.deltaTime);
             else cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, InstallFOV, SpeedToFOV * Time.deltaTime);
         }
-    }
-
-    private void OnCollisionStay(Collision other)
-    {
-        isGrounded = true;
-    }
-    
-    private void OnCollisionExit(Collision other)
-    {
-        isGrounded = false;
     }
 }

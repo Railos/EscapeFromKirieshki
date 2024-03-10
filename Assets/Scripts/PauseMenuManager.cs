@@ -50,7 +50,8 @@ public class PauseMenuManager : MonoBehaviour
 
     public void GoToMainMenu()
     {
-        SceneManager.LoadScene("Main Menu");
+        Player.Instance.status = PlayerStatus.LeftTheGame;
+        GameManager.Instance.UpdateGameState(GameState.FinishedRaid);
     }
 
     public void ReturnToGame()

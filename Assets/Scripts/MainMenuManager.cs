@@ -16,11 +16,14 @@ public class MainMenuManager : MonoBehaviour
         
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        GameManager.Instance.state = GameState.Menu;
     }
 
-    public void StartRaid()
+    public void StartRaid(int raidTime)
     {
-        SceneManager.LoadScene("Raid");
+        GameManager.Instance.raidTimer = raidTime;
+        GameManager.Instance.raidMap = "Raid";
+        GameManager.Instance.UpdateGameState(GameState.Raid);
     }
 
     public void OpenStash()

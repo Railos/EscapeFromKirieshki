@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour
 {
     public static Player Instance;
-    public GameObject weaponSwayObj;
+    public PlayerStatus status;
 
     [Header("Stamina")]
     public Slider staminaBar;
@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     public Color normalColorStamina;
     public Color exhaustedColorStamina;
     [SerializeField] private float stamina;
+    [SerializeField] private float health;
     public float maxStamina = 5f;
     public float minStaminaForAction = 0.5f;
     public bool isDrainingStamina;
@@ -46,6 +47,29 @@ public class Player : MonoBehaviour
             StopCoroutine(nameof(RestoreStamina));
             StartCoroutine(nameof(RestoreStamina));
         }
+    }
+
+    public float Health
+    {
+        get
+        {
+            return health;
+        }
+        set
+        {
+            health = value;
+            if (health < 0)
+            {
+                Kill();
+            }
+        }
+    }
+
+    public void Kill()
+    {
+        health = 0;
+        status = PlayerStatus.KIA;
+        GameManager.Instance.UpdateGameState(GameState.FinishedRaid);
     }
 
     private IEnumerator RestoreStamina()
@@ -96,4 +120,18 @@ public class Player : MonoBehaviour
             extractionCoroutine = null;
         }
     }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.transform.GetComponent<Enemy>()) Health -= 10f;
+    }
+}
+
+public enum PlayerStatus
+{
+    Alive,
+    KIA,
+    Lost,
+    LeftTheGame,
+    Survived
 }

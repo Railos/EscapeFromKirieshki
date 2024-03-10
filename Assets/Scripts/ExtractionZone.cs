@@ -24,7 +24,8 @@ public class ExtractionZone : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
 
-        SceneManager.LoadScene("Main Menu");
+        Player.Instance.status = PlayerStatus.Survived;
+        GameManager.Instance.UpdateGameState(GameState.FinishedRaid);
     }
 
     public void HideTimer()
