@@ -596,6 +596,38 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &182136521
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 182136522}
+  m_Layer: 6
+  m_Name: ADS
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &182136522
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182136521}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 964201009030215376}
+  m_Father: {fileID: 743141116}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &210194574
 GameObject:
   m_ObjectHideFlags: 0
@@ -2668,7 +2700,7 @@ Transform:
   m_GameObject: {fileID: 618370456}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.267, y: -0.081, z: 0.497}
+  m_LocalPosition: {x: 0.35, y: -0.15, z: 0.67}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2844,6 +2876,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 621089388}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &638488915
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 638488916}
+  m_Layer: 6
+  m_Name: Normal Position
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &638488916
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 638488915}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 743141116}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &647987457
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3382,7 +3445,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 964201009030215376}
+  - {fileID: 182136522}
+  - {fileID: 1197418984}
+  - {fileID: 638488916}
   m_Father: {fileID: 618370457}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 90}
 --- !u!114 &743141117
@@ -4886,6 +4951,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1195321675}
   m_CullTransparentMesh: 1
+--- !u!1 &1197418983
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1197418984}
+  m_Layer: 6
+  m_Name: ADS Position
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1197418984
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1197418983}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.06, y: 0.35, z: 0.05}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 743141116}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1255446206
 GameObject:
   m_ObjectHideFlags: 0
@@ -5382,7 +5478,7 @@ MonoBehaviour:
   speedToCrouch: 5
   speedToStandUp: 5
   RunningSpeed: 6
-  jumpSpeed: 8
+  jumpSpeed: 8.5
   timeBeforeJump: 0.25
   staminaDrainJump: 1
   lookSpeed: 2
@@ -5937,7 +6033,7 @@ Transform:
   m_GameObject: {fileID: 1593672963}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.1782894, y: 1.361, z: -6.8021593}
+  m_LocalPosition: {x: -1.1782894, y: 2.044, z: -6.8021593}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6741,13 +6837,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1901628037}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0.43500006, y: 0.000000014901161, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 964201009030215376}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!1 &1909535758
 GameObject:
   m_ObjectHideFlags: 0
@@ -7798,12 +7894,12 @@ Transform:
   m_GameObject: {fileID: 6607990648400160619}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalPosition: {x: 0, y: 0, z: -0.02959999}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1901628038}
-  m_Father: {fileID: 743141116}
+  m_Father: {fileID: 182136522}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!222 &1005200482034705991
 CanvasRenderer:
@@ -8533,11 +8629,17 @@ MonoBehaviour:
   shootingRange: 30
   bulletsInTime: 1
   isAutomatic: 1
-  spread: {x: 2, y: 2}
+  spread: {x: 0, y: 0}
   camRecoil: {fileID: 1349650853}
   cam: {fileID: 574311518}
   attackPoint: {fileID: 1901628038}
   bullet: {fileID: 8147567737871465605, guid: a791a5b8cc67d954f90e7853ea54f998, type: 3}
+  ADSPos: {fileID: 1197418984}
+  normalPos: {fileID: 638488916}
+  normalRecoil: {x: 0, y: 0.65, z: 4.5}
+  adsRecoil: {x: 0, y: 0.25, z: 1}
+  normalRecoilPos: 0.1
+  adsRecoilPos: 0.05
 --- !u!82 &6607990648400160621
 AudioSource:
   m_ObjectHideFlags: 0
@@ -8650,7 +8752,7 @@ MonoBehaviour:
   returnSpeed: 4
   snappinessPos: 10
   returnSpeedPos: 10
-  RecoilRotation: {x: 2, y: 7, z: 0.35}
+  RecoilRotation: {x: 0, y: 0.5, z: 3}
   RecoilPositionX: 0.1
 --- !u!114 &6764868144123569327
 MonoBehaviour:
