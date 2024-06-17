@@ -15,10 +15,6 @@ public class PlayerController : MonoBehaviour
     public float speedToCrouch;
     public float speedToStandUp;
     [SerializeField, Range(2, 20)] float RunningSpeed = 4.0f;
-    [SerializeField, Range(0, 20)] float jumpSpeed = 6.0f;
-    [SerializeField] private float timeBeforeJump;
-    private bool canJump = true;
-    public float staminaDrainJump;
     [SerializeField, Range(0.5f, 10)] float lookSpeed = 2.0f;
     [SerializeField, Range(10, 120)] float lookXDownLimit = 80.0f;
     [SerializeField, Range(10, 120)] float lookXUpLimit = 80.0f;
@@ -98,16 +94,6 @@ public class PlayerController : MonoBehaviour
 
         moveDirection = (forward * vertical) + (right * horizontal);
 
-        if (canJump && player.Stamina >= player.minStaminaForAction && controls.Land.Jump.triggered && Enabled && isGrounded && !isProne)
-        {
-            canJump = false;
-            characterController.AddForce(Vector3.up * jumpSpeed, ForceMode.Impulse);
-            player.Stamina -= staminaDrainJump;
-            if (isCrouching) Player.Instance.Stamina -= staminaDrainCrouch;
-            isCrouching = false;
-            Invoke(nameof(WaitForJump), timeBeforeJump);
-        }
-
         Moving = horizontal < 0 || vertical < 0 || horizontal > 0 || vertical > 0 ? true : false;
 
         Crouching();
@@ -152,11 +138,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void WaitForJump()
-    {
-        canJump = true;
-    }
-    
     private void FixedUpdate()
     {
         if (Enabled)
