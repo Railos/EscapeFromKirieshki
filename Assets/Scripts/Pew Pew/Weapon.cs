@@ -60,12 +60,12 @@ public class Weapon : MonoBehaviour
     {
         if (inADS)
         {
-            transform.parent.position = Vector3.Lerp(transform.parent.position, ADSPos.position, .05f);
+            transform.parent.position = Vector3.Lerp(transform.parent.position, ADSPos.position, 3f * Time.deltaTime);
             GetComponent<GunRecoil>().RecoilRotation = adsRecoil;
             GetComponent<GunRecoil>().RecoilPositionX = adsRecoilPos;
             return;
         }
-        transform.parent.position = Vector3.Lerp(transform.parent.position, normalPos.position, .05f);
+        transform.parent.position = Vector3.Lerp(transform.parent.position, normalPos.position, 3f * Time.deltaTime);
         GetComponent<GunRecoil>().RecoilRotation = normalRecoil;
         GetComponent<GunRecoil>().RecoilPositionX = normalRecoilPos;
     }

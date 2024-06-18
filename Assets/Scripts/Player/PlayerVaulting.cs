@@ -11,17 +11,14 @@ public class PlayerVaulting : MonoBehaviour
     private Player player;
     private PlayerController controller;
     private Vector3 vaultableSpot;
-    private bool isVaulting = false;
+    public bool isVaulting = false;
 
     private Vector3 initialPos;
     public float lowVaultSpeed;
     public float highVaultSpeed;
     public float overObjectVaultSpeed;
-    public float howLongPressButton;
     public float vaultResetTime;
-    private bool readyToVault;
     private bool canVault = true;
-    private float timePassed;
     private float vaultSpeed;
     private bool performedVault;
     private float width;
@@ -34,79 +31,48 @@ public class PlayerVaulting : MonoBehaviour
 
     private void Update()
     {
-        CheckForButtonPress();
-        
-        if (readyToVault)
+        if (player.controls.Land.Jump.triggered && controller.isGrounded && !controller.isProne)
         {
-            if (!Physics.Raycast(highVaultPos.position, transform.forward, 0.25f) &&
-                Physics.Raycast(lowVaultPos.position, transform.forward, 0.25f) && 
-                Physics.Raycast(lowestPos.position, transform.forward, 0.25f))
+            if (Physics.Raycast(lowestPos.position, transform.forward, 0.25f))
             {
-                Debug.Log("High Vault");
-                vaultSpeed = highVaultSpeed;
-                StartCoroutine(FindLedgeCLimbSpot());
-            }else if (!Physics.Raycast(highVaultPos.position, transform.forward, 0.25f) &&
-                      !Physics.Raycast(lowVaultPos.position, transform.forward, 0.25f) &&
-                      Physics.Raycast(lowestPos.position, transform.forward, 0.25f))
-            {
-                Debug.Log("Low Vault"); 
-                vaultSpeed = lowVaultSpeed;
-                if (CheckIfVault())
+                Debug.Log("raycast hit");
+                if (controller.vertical > 0f)
                 {
-                    StartCoroutine(nameof(PerformVault));
-                }
-                else
-                {
-                    StartCoroutine(FindLedgeCLimbSpot());
-                }
-            }
-            else
-            {
-                if (!performedVault && GetComponent<PlayerJump>().canJump && player.Stamina >= player.minStaminaForAction && controller.Enabled && controller.isGrounded && !controller.isProne)
-                {
-                    GetComponent<PlayerJump>().Jump();
-                }
-            }
+                    Debug.Log("WHAT");
+                    if (!Physics.Raycast(highVaultPos.position, transform.forward, 0.25f) &&
+                        Physics.Raycast(lowVaultPos.position, transform.forward, 0.25f))
+                    {
+                        Debug.Log("High Vault");
+                        vaultSpeed = highVaultSpeed;
+                        StartCoroutine(FindLedgeCLimbSpot());
+                    }else if (!Physics.Raycast(highVaultPos.position, transform.forward, 0.25f) &&
+                              !Physics.Raycast(lowVaultPos.position, transform.forward, 0.25f))
+                    {
+                        Debug.Log("Low Vault"); 
+                        vaultSpeed = lowVaultSpeed;
+                        if (CheckIfVault())
+                        {
+                            StartCoroutine(nameof(PerformVault));
+                        }
+                        else
+                        {
+                            StartCoroutine(FindLedgeCLimbSpot());
+                        }
+                    }
 
-            canVault = false;
-            StartCoroutine(nameof(ResetVault));
-            readyToVault = false;
-            performedVault = false;
+                    canVault = false;
+                    StartCoroutine(nameof(ResetVault));
+                    performedVault = false;
+                }
+            }
         }
-        
+
     }
 
     private IEnumerator ResetVault()
     {
         yield return new WaitForSeconds(vaultResetTime);
         canVault = true;
-    }
-    
-    private void CheckForButtonPress()
-    {
-        if (player.controls.Land.Jump.WasReleasedThisFrame())
-        {
-            if (timePassed > 0f)
-            {
-                if (!isVaulting && !performedVault && GetComponent<PlayerJump>().canJump && player.Stamina >= player.minStaminaForAction && controller.Enabled && controller.isGrounded && !controller.isProne)
-                {
-                    GetComponent<PlayerJump>().Jump();
-                }
-
-                if (performedVault) performedVault = false;
-            }
-            timePassed = howLongPressButton;
-        }
-        if (!canVault) return;
-        if (player.controls.Land.Jump.inProgress)
-        {
-            timePassed -= Time.deltaTime;
-            if (timePassed <= 0f)
-            {
-                readyToVault = true;
-                timePassed = howLongPressButton;
-            }
-        }
     }
 
     private bool CheckIfVault()
@@ -127,8 +93,10 @@ public class PlayerVaulting : MonoBehaviour
             initialPos += transform.forward * 0.01f;
         }
         Debug.Log(width);
-
-        if (width <= 33f) return true;
+        Debug.DrawLine(new Vector3(initialPos.x, initialPos.y + 0.01f, initialPos.z), new Vector3(initialPos.x, initialPos.y + 0.15f, initialPos.z) + transform.forward * width * 0.01f + transform.forward * 1.25f, Color.red, 5f);
+        if (width <= 33f && !Physics.Raycast(new Vector3(initialPos.x, initialPos.y + 0.15f, initialPos.z), transform.forward, width * 0.01f + 1.25f)
+        && !Physics.Raycast(new Vector3(initialPos.x, initialPos.y + 0.01f, initialPos.z) + -transform.right * 0.1f, transform.forward, width * 0.01f + 1.25f)
+        && !Physics.Raycast(new Vector3(initialPos.x, initialPos.y + 0.01f, initialPos.z) + transform.right * 0.1f, transform.forward, width * 0.01f + 1.25f)) return true;
         return false;
     }
     
