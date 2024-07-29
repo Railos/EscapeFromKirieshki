@@ -3,14 +3,16 @@ using UnityEngine.EventSystems;
 
 public class EquipSlot : InventorySlot
 {
-    public EquipableItemTypes itemType;
+    public EquipableItemTypes equipType;
     
     public override void OnDrop(PointerEventData eventData)
     {
         EquippableItem inventoryItem = eventData.pointerDrag.GetComponent<EquippableItem>();
+        if (inventoryItem is null) return;
+        inventoryItem.container.inventoryCanvas.GetComponent<Canvas>().sortingOrder = 1;
         if (inventoryItem != null)
         {
-            if (itemType == inventoryItem.itemType)
+            if (equipType == inventoryItem.equipType)
             {
                 inventoryItem.isSuccesfull = true;
                 inventoryItem.DoTheDropEquippable(this);

@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -18,14 +19,17 @@ public class Weapon : MonoBehaviour
     public GameObject bullet;
     private bool inADS;
     
-    public Transform ADSPos;
     public Transform normalPos;
+    public Transform clippingPos;
 
     public Vector3 normalRecoil;
     public Vector3 adsRecoil;
 
     public float normalRecoilPos;
     public float adsRecoilPos;
+    public Vector3 normalPosHolder;
+    
+    private bool clipping;
 
     private void Start()
     {
@@ -45,6 +49,24 @@ public class Weapon : MonoBehaviour
         Inputing();
         ChecksForShooting();
         ADS();
+        WeaponClippingFix();
+    }
+
+    private void WeaponClippingFix()
+    {
+        RaycastHit _out;
+        if (Physics.SphereCast(clippingPos.position, 0.2f, attackPoint.forward, out _out, 1.1f,
+            ~LayerMask.GetMask("Player")))
+        {
+            transform.parent.position = Vector3.Lerp(transform.parent.position, transform.parent.position + transform.right * 0.2f, 20f * Time.deltaTime);
+            clipping = true;
+        }
+            
+        else if (!Physics.SphereCast(clippingPos.position, 0.2f, attackPoint.forward, out _out, 1.2f, ~LayerMask.GetMask("Player")))
+        {
+            transform.parent.localPosition = Vector3.Lerp(transform.parent.localPosition, normalPosHolder, 3f * Time.deltaTime);
+            clipping = false;
+        }
     }
     
     private void Inputing()
@@ -60,12 +82,12 @@ public class Weapon : MonoBehaviour
     {
         if (inADS)
         {
-            transform.parent.position = Vector3.Lerp(transform.parent.position, ADSPos.position, 3f * Time.deltaTime);
+            transform.parent.parent.position = Vector3.Lerp(transform.parent.parent.position, Camera.main.ScreenToWorldPoint( new Vector3(Screen.width/2, Screen.height/2, Camera.main.nearClipPlane)) + transform.parent.parent.parent.parent.forward * 0.5f, 3f * Time.deltaTime);
             GetComponent<GunRecoil>().RecoilRotation = adsRecoil;
             GetComponent<GunRecoil>().RecoilPositionX = adsRecoilPos;
             return;
         }
-        transform.parent.position = Vector3.Lerp(transform.parent.position, normalPos.position, 3f * Time.deltaTime);
+        transform.parent.parent.position = Vector3.Lerp(transform.parent.parent.position, normalPos.position, 3f * Time.deltaTime);
         GetComponent<GunRecoil>().RecoilRotation = normalRecoil;
         GetComponent<GunRecoil>().RecoilPositionX = normalRecoilPos;
     }
@@ -82,8 +104,7 @@ public class Weapon : MonoBehaviour
     private void Shoot()
     {
         canShoot = false;
-        GetComponent<GunRecoil>().Fire();
-        camRecoil.GetComponent<CameraRecoil>().Fire();
+        
         
         float x = Random.Range(-spread.x, spread.x);
         float y = Random.Range(-spread.y, spread.y);
@@ -94,6 +115,9 @@ public class Weapon : MonoBehaviour
         curBullet.GetComponent<Rigidbody>().AddForce(bulletDirection.normalized * 30f, ForceMode.Impulse);
         Destroy(curBullet, 5f);
         
+        GetComponent<GunRecoil>().Fire();
+        camRecoil.GetComponent<CameraRecoil>().Fire();
+        
         GetComponent<AudioSource>().PlayOneShot(shootSound);
         Invoke(nameof(ResetShot), shootSpeed);
     }
@@ -102,5 +126,4 @@ public class Weapon : MonoBehaviour
     {
         canShoot = true;
     }
-
 }

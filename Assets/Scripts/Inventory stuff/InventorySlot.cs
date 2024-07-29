@@ -13,6 +13,8 @@ public class InventorySlot : MonoBehaviour, IDropHandler
     public virtual void OnDrop(PointerEventData eventData)
     {
         InventoryItem inventoryItem = eventData.pointerDrag.GetComponent<InventoryItem>();
+        if (inventoryItem is null) return;
+        inventoryItem.container.inventoryCanvas.GetComponent<Canvas>().sortingOrder = 1;
         if (inventoryItem != null)
         {
             inventoryItem.isSuccesfull = true;

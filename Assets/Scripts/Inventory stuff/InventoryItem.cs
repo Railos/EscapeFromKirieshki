@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -11,12 +10,15 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Vector2 itemSize;
     public bool isSuccesfull = false;
     public Vector2 prevPosition;
+    public ItemTypes type;
+    public float rarityPercent;
     
     public void OnBeginDrag(PointerEventData eventData)
     {
         GetComponent<Image>().raycastTarget = false;
         prevPosition = transform.position;
         transform.SetParent(container.inventoryCanvas.transform);
+        container.inventoryCanvas.GetComponent<Canvas>().sortingOrder = 2;
         transform.SetAsLastSibling();
         foreach (var cell in occupiedCells) cell.isOccupied = false;
     }
@@ -26,9 +28,10 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         transform.position = new Vector3(Input.mousePosition.x + ((itemSize.x - 1) * 50 / 2), Input.mousePosition.y + ((itemSize.y - 1) * 50 / 2), 0f);
     }
 
-    public void OnEndDrag(PointerEventData eventData)
+    public virtual void OnEndDrag(PointerEventData eventData)
     {
         GetComponent<Image>().raycastTarget = true;
+        container.inventoryCanvas.GetComponent<Canvas>().sortingOrder = 1;
         transform.SetParent(container.itemsObject);
         if (!isSuccesfull)
         {
@@ -38,7 +41,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         else isSuccesfull = false;
     }
 
-    public void DoTheDrop(InventorySlot slot)
+    public virtual void DoTheDrop(InventorySlot slot)
     {
         InventoryManager prevContainer = container;
         if (slot.container != this.container)
@@ -82,4 +85,13 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         
         transform.position = new Vector3(slot.transform.position.x + ((itemSize.x - 1) * 50 / 2), slot.transform.position.y + ((itemSize.y - 1) * 50 / 2), 0f);
     }
+}
+
+public enum ItemTypes
+{
+    BuildingMaterials,
+    Valuables,
+    Electronics,
+    Keys,
+    Equippable
 }

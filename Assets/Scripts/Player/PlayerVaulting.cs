@@ -35,10 +35,8 @@ public class PlayerVaulting : MonoBehaviour
         {
             if (Physics.Raycast(lowestPos.position, transform.forward, 0.25f))
             {
-                Debug.Log("raycast hit");
                 if (controller.vertical > 0f)
                 {
-                    Debug.Log("WHAT");
                     if (!Physics.Raycast(highVaultPos.position, transform.forward, 0.25f) &&
                         Physics.Raycast(lowVaultPos.position, transform.forward, 0.25f))
                     {
@@ -64,6 +62,14 @@ public class PlayerVaulting : MonoBehaviour
                     StartCoroutine(nameof(ResetVault));
                     performedVault = false;
                 }
+                else
+                {
+                    GetComponent<PlayerJump>().JumpCheckings();
+                }
+            }
+            else
+            {
+                GetComponent<PlayerJump>().JumpCheckings();
             }
         }
 

@@ -31,21 +31,37 @@ public class PlayerInventory : MonoBehaviour
         {
             if (stashObject.activeSelf)
             {
-                inStash = false;
-                stashObject.SetActive(false);
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                GetComponent<PlayerController>().Enabled = true;
+                CloseTab();
             }
             else
             {
-                inStash = true;
-                stashObject.SetActive(true);
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-                GetComponent<PlayerController>().Enabled = false;
+                OpenTab();
             }
         }
+    }
+
+    public void OpenTab()
+    {
+        inStash = true;
+        stashObject.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        GetComponent<PlayerController>().Enabled = false;
+        GetComponent<InteractionHandler>().interactionMenu.gameObject.SetActive(false);
+        
+    }
+
+    public void CloseTab()
+    {
+        inStash = false;
+        stashObject.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        GetComponent<PlayerController>().Enabled = true;
+        InteractionHandler interactionHandler = GetComponent<InteractionHandler>();
+        interactionHandler.interactionMenu.gameObject.SetActive(true);
+        interactionHandler.lootTab.SetActive(false);
+        if (interactionHandler.curContainer != null) interactionHandler.curContainer.containerCanvas.SetActive(false);
     }
     
 }

@@ -28,26 +28,18 @@ public class PlayerJump : MonoBehaviour
     private void Update()
     {
         CheckForButtonPress();
-        JumpCheckings();
+        //JumpCheckings();
     }
     
     public void JumpCheckings()
     {
-        if (player.controls.Land.Jump.WasReleasedThisFrame())
-        {
-            if (!readyToJump)
-            {
-                timePassed = howLongPressButton;
-                return;
-            }
-            if (GetComponent<PlayerVaulting>().isVaulting) return;
-            if (!canJump) return;
-            if (player.Stamina < player.minStaminaForAction) return;
-            if (!controller.Enabled) return;
-            if (!controller.isGrounded) return;
-            if (controller.isProne) return;
-            Jump();
-        }
+        if (GetComponent<PlayerVaulting>().isVaulting) return;
+        if (!canJump) return;
+        if (player.Stamina < player.minStaminaForAction) return;
+        if (!controller.Enabled) return;
+        if (!controller.isGrounded) return;
+        if (controller.isProne) return;
+        Jump();
     }
     
     private void CheckForButtonPress()

@@ -37,15 +37,18 @@ public class PauseMenuManager : MonoBehaviour
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
+                GetComponent<InteractionHandler>().interactionMenu.gameObject.SetActive(false);
                 extractionCanvas.SetActive(false);
             }
             else
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
+                GetComponent<InteractionHandler>().interactionMenu.gameObject.SetActive(true);
                 if (Player.Instance.extractionCoroutine != null) extractionCanvas.SetActive(true);
             }
         }
+        else if (PlayerInventory.Instance.inStash && Player.Instance.controls.Land.PauseGame.triggered) PlayerInventory.Instance.CloseTab();
     }
 
     public void GoToMainMenu()
