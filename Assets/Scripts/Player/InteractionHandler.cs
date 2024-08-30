@@ -91,5 +91,8 @@ public class InteractionHandler : MonoBehaviour
         curContainer = container;
         container.containerCanvas.SetActive(true);
         if (!container.generated) StartCoroutine(container.GenerateLoot());
+        if (!container.searchedContainer)
+            container.SearchContainerCoroutine = container.StartCoroutine(container.SearchContainer());
+        else if (!container.searchedAllItems) container.SearchItemsCoroutine = container.StartCoroutine(container.SearchItems());
     }
 }

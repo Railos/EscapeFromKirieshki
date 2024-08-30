@@ -28,7 +28,7 @@ public class Weapon : MonoBehaviour
     public float normalRecoilPos;
     public float adsRecoilPos;
     public Vector3 normalPosHolder;
-    
+
     private bool clipping;
 
     private void Start()
@@ -105,14 +105,13 @@ public class Weapon : MonoBehaviour
     {
         canShoot = false;
         
-        
         float x = Random.Range(-spread.x, spread.x);
         float y = Random.Range(-spread.y, spread.y);
 
         Vector3 bulletDirection = attackPoint.forward + new Vector3(x, y, 0);
         var curBullet = Instantiate(bullet, attackPoint.position, Quaternion.identity);
         curBullet.transform.forward = bulletDirection.normalized;
-        curBullet.GetComponent<Rigidbody>().AddForce(bulletDirection.normalized * 30f, ForceMode.Impulse);
+        curBullet.GetComponent<Rigidbody>().AddForce(bulletDirection.normalized * 220f, ForceMode.Impulse);
         Destroy(curBullet, 5f);
         
         GetComponent<GunRecoil>().Fire();

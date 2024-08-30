@@ -95,3 +95,6 @@ MonoBehaviour:
   prevPosition: {x: 0, y: 0}
   type: 1
   rarityPercent: 50
+  isSearched: 1
+  SearchingSprite: {fileID: 21300000, guid: 1d6d86aff67552449b913c45a4d26c81, type: 3}
+  NormalSprite: {fileID: 21300000, guid: 5af31ceb7958c97459a830d20c91ffe5, type: 3}

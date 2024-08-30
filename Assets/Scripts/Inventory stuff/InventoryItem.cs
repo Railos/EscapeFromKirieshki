@@ -12,9 +12,13 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public Vector2 prevPosition;
     public ItemTypes type;
     public float rarityPercent;
+    public bool isSearched = true;
+    public Sprite SearchingSprite;
+    public Sprite NormalSprite;
     
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (!isSearched) return;
         GetComponent<Image>().raycastTarget = false;
         prevPosition = transform.position;
         transform.SetParent(container.inventoryCanvas.transform);
@@ -25,11 +29,12 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public virtual void OnDrag(PointerEventData eventData)
     {
-        transform.position = new Vector3(Input.mousePosition.x + ((itemSize.x - 1) * 50 / 2), Input.mousePosition.y + ((itemSize.y - 1) * 50 / 2), 0f);
+        if (isSearched) transform.position = new Vector3(Input.mousePosition.x + ((itemSize.x - 1) * 50 / 2), Input.mousePosition.y + ((itemSize.y - 1) * 50 / 2), 0f);
     }
 
     public virtual void OnEndDrag(PointerEventData eventData)
     {
+        if (!isSearched) return;
         GetComponent<Image>().raycastTarget = true;
         container.inventoryCanvas.GetComponent<Canvas>().sortingOrder = 1;
         transform.SetParent(container.itemsObject);
@@ -43,6 +48,7 @@ public class InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public virtual void DoTheDrop(InventorySlot slot)
     {
+        if (!isSearched) return;
         InventoryManager prevContainer = container;
         if (slot.container != this.container)
         {

@@ -18,6 +18,7 @@ public class EquippableItem : InventoryItem
 
     public override void OnDrag(PointerEventData eventData)
     {
+        if (!isSearched) return;
         base.OnDrag(eventData);
         GetComponent<RectTransform>().sizeDelta = new Vector2(prevSize.x,prevSize.y);
 
@@ -29,6 +30,7 @@ public class EquippableItem : InventoryItem
 
     public override void OnEndDrag(PointerEventData eventData)
     {
+        if (!isSearched) return;
         GetComponent<Image>().raycastTarget = true;
         container.inventoryCanvas.GetComponent<Canvas>().sortingOrder = 1;
         transform.SetParent(container.itemsObject);
@@ -53,6 +55,7 @@ public class EquippableItem : InventoryItem
 
     public void DoTheDropEquippable(InventorySlot slot)
     {
+        if (!isSearched) return;
         if (slot.isOccupied)
         {
             transform.position = prevPosition;
@@ -73,6 +76,7 @@ public class EquippableItem : InventoryItem
     
     public override void DoTheDrop(InventorySlot slot)
     {
+        if (!isSearched) return;
         InventoryManager prevContainer = container;
         if (slot.container != this.container)
         {

@@ -6,7 +6,6 @@ public class PlayerInventory : MonoBehaviour
     public bool inStash;
     public GameObject stashObject;
     public GameObject cam;
-    public KeyCode stashKey;
 
     private void Awake()
     {
@@ -61,7 +60,13 @@ public class PlayerInventory : MonoBehaviour
         InteractionHandler interactionHandler = GetComponent<InteractionHandler>();
         interactionHandler.interactionMenu.gameObject.SetActive(true);
         interactionHandler.lootTab.SetActive(false);
-        if (interactionHandler.curContainer != null) interactionHandler.curContainer.containerCanvas.SetActive(false);
+        if (interactionHandler.curContainer != null)
+        {
+            interactionHandler.curContainer.containerCanvas.SetActive(false);
+            if (!interactionHandler.curContainer.searchedContainer)
+                interactionHandler.curContainer.StopSearchingContainer();
+            else if (!interactionHandler.curContainer.searchedAllItems) interactionHandler.curContainer.StopSearchingItems();
+        }
     }
     
 }

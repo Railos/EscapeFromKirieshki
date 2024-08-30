@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using UnityEngine.UI;
 
 public class Searchable : Interactable
 {
@@ -10,11 +11,18 @@ public class Searchable : Interactable
     public GameObject containerCanvas;
     public List<InventoryItem> items = new List<InventoryItem>();
     public List<InventoryItem> possibleItems = new List<InventoryItem>();
+    public GameObject searchPanel;
     public bool generated = false;
+
+    public bool searchedContainer = false;
+    public bool searchedAllItems = false;
 
     private int curX = 0;
     private int curY = 0;
     private int maxY = 1;
+
+    [HideInInspector] public Coroutine SearchContainerCoroutine = null;
+    [HideInInspector] public Coroutine SearchItemsCoroutine = null;
 
     public IEnumerator GenerateLoot()
     {
@@ -38,6 +46,9 @@ public class Searchable : Interactable
                 var cur = Instantiate(curItem, containerManager.itemsObject);
                 cur.container = containerManager;
                 cur.transform.position = new Vector3(containerManager.cells[y * (int) containerSize.x + x].transform.position.x + ((cur.itemSize.x - 1) * 50 / 2), containerManager.cells[y * (int) containerSize.x + x].transform.position.y + ((cur.itemSize.y - 1) * 50 / 2), 0f);
+                cur.isSearched = false;
+                cur.GetComponent<Image>().sprite = cur.SearchingSprite;
+                items.Add(cur);
                 bool unityidinaxyi = false;
                 for (int y1 = y; y1 > y - curItem.itemSize.y; y--)
                 {
@@ -65,4 +76,29 @@ public class Searchable : Interactable
 
         generated = true;
     }
+
+    public IEnumerator SearchContainer()
+    {
+        yield return new WaitForSeconds(2f);
+        searchedContainer = true;
+        searchPanel.SetActive(false);
+        SearchItemsCoroutine = StartCoroutine(SearchItems());
+    }
+
+    public IEnumerator SearchItems()
+    {
+        foreach (var item in items)
+        {
+            if (item.isSearched) continue;
+            yield return new WaitForSeconds(1f);
+            item.isSearched = true;
+            item.GetComponent<Image>().sprite = item.NormalSprite;
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        searchedAllItems = true;
+    }
+
+    public void StopSearchingContainer() => StopCoroutine(SearchContainerCoroutine);
+    public void StopSearchingItems() => StopCoroutine(SearchItemsCoroutine);
 }
